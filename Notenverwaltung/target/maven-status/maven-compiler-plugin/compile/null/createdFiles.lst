@@ -1,0 +1,11 @@
+gui/Notenverwaltung$2.class
+gui/Notenverwaltung.class
+model/Nutzer.class
+model/Note.class
+model/CreateNewException.class
+model/NutzerContainer.class
+controller/WriterReader.class
+controller/Counter.class
+gui/LoginDialog.class
+model/Fachrichtung.class
+gui/Notenverwaltung$1.class
