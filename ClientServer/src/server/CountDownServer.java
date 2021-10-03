@@ -7,22 +7,27 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class CountDownServer implements Runnable {
-    static int port;
+
+    int port;
     ServerSocket server;
     InputStream inputStream;
     OutputStream outputStream;
     Thread talk;
-    volatile ServerState zustand;
+    ServerState zustand;
     ServerProtocol serverProtocol = new ServerProtocol();
     BufferedReader inputBufferedReader;
     PrintWriter outputPrintWriter;
+
+    public Thread getTalk() {
+        return talk;
+    }
 
     public ServerProtocol getServerProtocol() {
         return serverProtocol;
     }
 
     public CountDownServer(int port) {
-        CountDownServer.port = port;
+        this.port = port;
         zustand = new ServerWelcome();
         init();
     }
@@ -59,7 +64,7 @@ public class CountDownServer implements Runnable {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         try {
             Socket socket = server.accept();
             System.out.println("Server: client connected");
@@ -71,11 +76,13 @@ public class CountDownServer implements Runnable {
             do {
                 zustand = zustand.execute(this);
             } while (zustand != null && (!zustand.isEndingState() || !zustand.isErrorState()));
+
             socket.close();
             finish();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        notify();
     }
 
     public void finish() {

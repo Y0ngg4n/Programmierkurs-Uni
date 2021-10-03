@@ -6,7 +6,7 @@ import client.states.ClientWelcome;
 import java.io.*;
 import java.net.Socket;
 
-public class CountDownClient implements Runnable{
+public class CountDownClient implements Runnable {
     String host;
     int port;
     Socket client;
@@ -18,6 +18,9 @@ public class CountDownClient implements Runnable{
     BufferedReader inputBufferedReader;
     PrintWriter outputPrintWriter;
 
+    public Thread getTalk() {
+        return talk;
+    }
 
     public ClientProtocol getClientProtocol() {
         return clientProtocol;
@@ -62,7 +65,7 @@ public class CountDownClient implements Runnable{
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         try {
             outputStream = client.getOutputStream();
             inputStream = client.getInputStream();
@@ -78,6 +81,7 @@ public class CountDownClient implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        notify();
     }
 
     public void finish() {
